@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthTokensDTO, authTokensDTO } from './dto';
 import { AuthJwtPayloadDTO, authJwtPayloadDTO } from './dto/authJwtPayload.dto';
 import { EnvService } from 'src/env/env.service';
@@ -31,5 +31,23 @@ export class TokensService {
     });
 
     return authTokensDTO.parse({ accessToken, refreshToken });
+  }
+
+  async verifyRefreshToken(refreshToken: string): Promise<AuthJwtPayloadDTO> {
+    try {
+      const rtSecret = this.envService.get('JWT_RT_SECRET');
+
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: rtSecret,
+      });
+
+      if (!payload) {
+        throw new UnauthorizedException('refresh token has been expired');
+      }
+
+      return authJwtPayloadDTO.parse(payload);
+    } catch (error) {
+      throw new UnauthorizedException('invalid refresh token');
+    }
   }
 }

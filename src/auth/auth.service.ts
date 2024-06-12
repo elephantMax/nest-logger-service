@@ -1,12 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { LoginDto } from './dto';
+import { LoginDTO } from './dto';
 import { CreateUserDto, UserDTO, userDTO } from 'src/shared/dto';
 import * as bcrypt from 'bcrypt';
 import { TokensService } from 'src/tokens/tokens.service';
 import { LoginResponseDTO, loginResponseDTO } from './dto/login-response.dto';
 import { AuthJwtPayloadDTO } from 'src/tokens/dto/authJwtPayload.dto';
 import { EnvService } from 'src/env/env.service';
+import {
+  RefreshResponseDTO,
+  refreshResponseDTO,
+} from './dto/refresh-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +20,7 @@ export class AuthService {
     private envService: EnvService,
   ) {}
 
-  async login(dto: LoginDto): Promise<LoginResponseDTO> {
+  async login(dto: LoginDTO): Promise<LoginResponseDTO> {
     const user = await this.userService.findByLogin(dto.login);
 
     if (!user) {
@@ -54,5 +58,15 @@ export class AuthService {
     });
 
     return userDTO.parse(user);
+  }
+
+  async refresh(refreshToken: string): Promise<RefreshResponseDTO> {
+    const payload = await this.tokensService.verifyRefreshToken(refreshToken);
+
+    const tokens = await this.tokensService.generateAuthToken(payload);
+
+    return refreshResponseDTO.parse({
+      tokens,
+    });
   }
 }

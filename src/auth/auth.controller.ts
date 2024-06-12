@@ -1,8 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserDto, UserDTO } from 'src/shared/dto';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto';
+import { LoginDTO } from './dto';
 import { LoginResponseDTO } from './dto/login-response.dto';
+import { RefreshDTO } from './dto/refresh.dto';
+import { RefreshResponseDTO } from './dto/refresh-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +16,12 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() body: LoginDto): Promise<LoginResponseDTO> {
+  async login(@Body() body: LoginDTO): Promise<LoginResponseDTO> {
     return this.authService.login(body);
+  }
+
+  @Post('refresh')
+  async refresh(@Body() body: RefreshDTO): Promise<RefreshResponseDTO> {
+    return this.authService.refresh(body.refreshToken);
   }
 }
