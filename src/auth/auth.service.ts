@@ -69,4 +69,10 @@ export class AuthService {
       tokens,
     });
   }
+
+  async getAuthorizedUser(login: string): Promise<UserDTO> {
+    const user = await this.userService.findByLogin(login);
+
+    return userDTO.parse(user);
+  }
 }

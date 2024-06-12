@@ -50,4 +50,22 @@ export class TokensService {
       throw new UnauthorizedException('invalid refresh token');
     }
   }
+
+  async verifyAccessToken(accessToken: string): Promise<AuthJwtPayloadDTO> {
+    try {
+      const atSecret = this.envService.get('JWT_AT_SECRET');
+
+      const payload = await this.jwtService.verifyAsync(accessToken, {
+        secret: atSecret,
+      });
+
+      if (!payload) {
+        throw new UnauthorizedException('refresh token has been expired');
+      }
+
+      return authJwtPayloadDTO.parse(payload);
+    } catch (error) {
+      throw new UnauthorizedException('invalid refresh token');
+    }
+  }
 }
