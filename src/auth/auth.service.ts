@@ -3,12 +3,20 @@ import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto';
 import { CreateUserDto, UserDTO, userDTO } from 'src/shared/dto';
 import * as bcrypt from 'bcrypt';
+import { TokensService } from 'src/tokens/tokens.service';
+import { LoginResponseDTO, loginResponseDTO } from './dto/login-response.dto';
+import { AuthJwtPayloadDTO } from 'src/tokens/dto/authJwtPayload.dto';
+import { EnvService } from 'src/env/env.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private tokensService: TokensService,
+    private envService: EnvService,
+  ) {}
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<LoginResponseDTO> {
     const user = await this.userService.findByLogin(dto.login);
 
     if (!user) {
@@ -21,13 +29,23 @@ export class AuthService {
       throw new BadRequestException('user not found');
     }
 
-    // TODO: generate tokens
+    const payload: AuthJwtPayloadDTO = {
+      sub: user.id,
+      login: user.login,
+      name: user.name,
+    };
 
-    return isPasswordMatch;
+    const tokens = await this.tokensService.generateAuthToken(payload);
+
+    return loginResponseDTO.parse({
+      tokens,
+      user: user,
+    });
   }
 
   async register(dto: CreateUserDto): Promise<UserDTO> {
-    const password = await bcrypt.hash(dto.password, 10);
+    const salt = this.envService.get('PASSWORD_SALT');
+    const password = await bcrypt.hash(dto.password, salt);
 
     const user = await this.userService.create({
       login: dto.login,

@@ -8,6 +8,7 @@ import { envSchema } from './env/env';
 import { AuthModule } from './auth/auth.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ZodValidationPipe } from 'nestjs-zod';
     }),
     EnvModule,
     AuthModule,
+    TokensModule,
   ],
   controllers: [AppController],
   providers: [
