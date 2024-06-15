@@ -7,5 +7,6 @@ export const envSchema = z.object({
   JWT_RT_SECRET: z.coerce.string().default('jwt_rt_secret'),
   JWT_AT_EXPIRES_IN: z.coerce.string().optional().default('5m'),
   JWT_RT_EXPIRES_IN: z.coerce.string().optional().default('1h'),
+  FRONT_ORIGIN: z.coerce.string().optional().default('http://localhost:3000'),
 });
 export type Env = z.infer<typeof envSchema>;
