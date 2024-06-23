@@ -5,8 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env/env';
 import { AuthModule } from './auth/auth.module';
 import { APP_PIPE } from '@nestjs/core';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { TokensModule } from './tokens/tokens.module';
+import { ValidationPipe } from './shared/pipes/validation.pipe';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { TokensModule } from './tokens/tokens.module';
   providers: [
     {
       provide: APP_PIPE,
-      useClass: ZodValidationPipe,
+      useClass: ValidationPipe,
     },
   ],
 })
