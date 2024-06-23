@@ -1,16 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { LoginDTO } from './dto';
-import { CreateUserDto, UserDTO, userDTO } from 'src/shared/dto';
+import { LoginDTO } from 'src/shared/dto';
+import { CreateUserDto } from 'src/shared/dto';
 import * as bcrypt from 'bcrypt';
 import { TokensService } from 'src/tokens/tokens.service';
-import { LoginResponseDTO, loginResponseDTO } from './dto/login-response.dto';
+import { LoginResponseDTO, loginResponseDTO } from './dto';
 import { AuthJwtPayloadDTO } from 'src/tokens/dto/authJwtPayload.dto';
 import { EnvService } from 'src/env/env.service';
-import {
-  RefreshResponseDTO,
-  refreshResponseDTO,
-} from './dto/refresh-response.dto';
+import { RefreshResponseDTO, refreshResponseDTO } from './dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -47,17 +45,15 @@ export class AuthService {
     });
   }
 
-  async register(dto: CreateUserDto): Promise<UserDTO> {
+  async register(dto: CreateUserDto): Promise<User> {
     const salt = this.envService.get('PASSWORD_SALT');
     const password = await bcrypt.hash(dto.password, salt);
 
-    const user = await this.userService.create({
+    return this.userService.create({
       login: dto.login,
       name: dto.name,
       password,
     });
-
-    return userDTO.parse(user);
   }
 
   async refresh(refreshToken: string): Promise<RefreshResponseDTO> {
@@ -70,9 +66,7 @@ export class AuthService {
     });
   }
 
-  async getAuthorizedUser(login: string): Promise<UserDTO> {
-    const user = await this.userService.findByLogin(login);
-
-    return userDTO.parse(user);
+  async getAuthorizedUser(login: string): Promise<User> {
+    return this.userService.findByLogin(login);
   }
 }

@@ -7,11 +7,11 @@ import { User } from '@prisma/client';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async getAll() {
+  async getAll(): Promise<User[]> {
     return this.prisma.user.findMany();
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.prisma.user.findFirst({
       where: {
         login: createUserDto.login,
@@ -19,6 +19,7 @@ export class UsersService {
     });
 
     if (user) {
+      // TODO: return specific error
       throw new BadRequestException('user already exists');
     }
 

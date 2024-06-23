@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private userService: UsersService) {}
 
+  // TODO: apply ZodSerializer
   @Get()
   async getAll() {
     return this.userService.getAll();

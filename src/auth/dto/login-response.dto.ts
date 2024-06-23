@@ -1,3 +1,4 @@
+import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 import { userDTO } from 'src/shared/dto';
 import { authTokensDTO } from 'src/tokens/dto';
@@ -7,4 +8,4 @@ export const loginResponseDTO = z.object({
   tokens: authTokensDTO,
 });
 
-export type LoginResponseDTO = z.infer<typeof loginResponseDTO>;
+export class LoginResponseDTO extends createZodDto(loginResponseDTO) {}
