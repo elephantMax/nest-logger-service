@@ -8,6 +8,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TokensModule } from './tokens/tokens.module';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ZodSerializerInterceptor } from 'nestjs-zod';
     EnvModule,
     AuthModule,
     TokensModule,
+    ProjectsModule,
   ],
   providers: [
     {
