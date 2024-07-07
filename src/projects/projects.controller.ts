@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/at.guard';
 import { CreateProjectDto } from './dto';
 import { ProjectsService } from './projects.service';
@@ -19,5 +19,12 @@ export class ProjectsController {
     @GetCurrentUser() user: AuthJwtPayloadDTO,
   ) {
     return this.projectService.create(body, user.sub);
+  }
+
+  @ZodSerializerDto(ProjectDTO)
+  @Get()
+  @UseGuards(AuthGuard)
+  async getAll(@GetCurrentUser() user: AuthJwtPayloadDTO) {
+    return this.projectService.getAllByUserId(user.sub);
   }
 }

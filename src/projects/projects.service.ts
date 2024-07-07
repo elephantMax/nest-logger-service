@@ -23,4 +23,19 @@ export class ProjectsService {
       },
     });
   }
+
+  async getAllByUserId(userId: string) {
+    return this.prismaService.project.findMany({
+      where: { userId: userId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            login: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
 }
