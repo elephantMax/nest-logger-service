@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/at.guard';
 import { CreateProjectDto } from './dto';
 import { ProjectsService } from './projects.service';
@@ -26,5 +36,15 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   async getAll(@GetCurrentUser() user: AuthJwtPayloadDTO) {
     return this.projectService.getAllByUserId(user.sub);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  async removeById(
+    @Param('id') projectId: string,
+    @GetCurrentUser() user: AuthJwtPayloadDTO,
+  ): Promise<void> {
+    await this.projectService.removeById(projectId, user.sub);
   }
 }

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto';
 import { PrismaService } from 'src/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProjectsService {
@@ -37,5 +38,19 @@ export class ProjectsService {
         },
       },
     });
+  }
+
+  async removeById(projectId: string, userId: string): Promise<void> {
+    try {
+      await this.prismaService.project.delete({
+        where: { userId, id: projectId },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new BadRequestException('Project not found');
+        }
+      }
+    }
   }
 }
