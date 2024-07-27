@@ -41,6 +41,22 @@ export class ProjectsService {
     });
   }
 
+  async getUserProjectById(userId: string, projectId: string) {
+    return this.prismaService.project.findFirst({
+      where: { userId: userId, id: projectId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            login: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async removeById(projectId: string, userId: string): Promise<void> {
     try {
       await this.prismaService.project.delete({

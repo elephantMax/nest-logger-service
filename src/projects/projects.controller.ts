@@ -38,6 +38,16 @@ export class ProjectsController {
     return this.projectService.getAllByUserId(user.sub);
   }
 
+  @ZodSerializerDto(ProjectDTO)
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  async getById(
+    @Param('id') projectId: string,
+    @GetCurrentUser() user: AuthJwtPayloadDTO,
+  ) {
+    return this.projectService.getUserProjectById(user.sub, projectId);
+  }
+
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   @UseGuards(AuthGuard)
