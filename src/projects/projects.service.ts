@@ -37,6 +37,7 @@ export class ProjectsService {
           },
         },
       },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
