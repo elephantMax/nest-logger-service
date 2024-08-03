@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import {
+  Logger,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { EnvModule } from './env/env.module';
 import { ConfigModule } from '@nestjs/config';
@@ -9,6 +15,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { ValidationPipe } from './shared/pipes/validation.pipe';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { ProjectsModule } from './projects/projects.module';
+import { LoggerMiddleware } from './logger.middleware';
 
 @Module({
   imports: [
@@ -36,6 +43,13 @@ import { ProjectsModule } from './projects/projects.module';
       provide: APP_INTERCEPTOR,
       useClass: ZodSerializerInterceptor,
     },
+    Logger,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { EnvService } from './env/env.service';
-import { logger } from './logger.middleware';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['warn', 'debug', 'error', 'fatal', 'log', 'verbose'],
+  });
   const configService = app.get(EnvService);
 
   app.enableCors({
@@ -14,8 +15,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const port = configService.get('PORT');
-
-  app.use(logger);
 
   await app.listen(port);
 }
