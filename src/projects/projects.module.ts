@@ -17,5 +17,6 @@ import { UsersService } from 'src/users/users.service';
     JwtService,
     UsersService,
   ],
+  exports: [ProjectsService],
 })
 export class ProjectsModule {}

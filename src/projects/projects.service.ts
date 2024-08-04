@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto';
 import { PrismaService } from 'src/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, Project } from '@prisma/client';
 
 @Injectable()
 export class ProjectsService {
@@ -12,6 +12,7 @@ export class ProjectsService {
       data: {
         name: dto.name,
         userId,
+        system: dto.system,
       },
       include: {
         user: {
@@ -69,5 +70,16 @@ export class ProjectsService {
         }
       }
     }
+  }
+
+  async getSystemProject(adminId: string): Promise<Project | null> {
+    const project = await this.prismaService.project.findFirst({
+      where: {
+        system: true,
+        userId: adminId,
+      },
+    });
+
+    return project ?? null;
   }
 }

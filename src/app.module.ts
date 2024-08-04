@@ -17,6 +17,7 @@ import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { ProjectsModule } from './projects/projects.module';
 import { LoggerMiddleware } from './logger.middleware';
 import { InitService } from './init.service';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { InitService } from './init.service';
     AuthModule,
     TokensModule,
     ProjectsModule,
+    UsersModule,
   ],
   providers: [
     {
@@ -46,6 +48,7 @@ import { InitService } from './init.service';
     },
     Logger,
     InitService,
+    PrismaService,
   ],
 })
 export class AppModule implements NestModule {
