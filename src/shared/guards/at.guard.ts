@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { TokensService } from 'src/tokens/tokens.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private tokensService: TokensService) {}
+  constructor(
+    private tokensService: TokensService,
+    private userService: UsersService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
@@ -21,6 +25,12 @@ export class AuthGuard implements CanActivate {
       }
 
       const payload = await this.tokensService.verifyAccessToken(token);
+
+      const user = await this.userService.findById(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedException();
+      }
 
       request['user'] = payload;
 

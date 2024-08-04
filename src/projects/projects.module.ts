@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 import { TokensService } from 'src/tokens/tokens.service';
 import { EnvService } from 'src/env/env.service';
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   controllers: [ProjectsController],
@@ -14,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
     TokensService,
     EnvService,
     JwtService,
+    UsersService,
   ],
 })
 export class ProjectsModule {}

@@ -11,11 +11,11 @@ async function delay(ms: number): Promise<void> {
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  constructor(private logger: Logger) {}
+  constructor(private readonly logger: Logger) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     await delay(600);
-    // Gets the request log
+
     this.logger.log({
       headers: req.headers,
       body: req.body,
@@ -85,13 +85,10 @@ const getResponseLog = (res: Response, logger: Logger) => {
     // Encode buffer as utf8 JSON string
     const body = Buffer.concat(chunkBuffers).toString('utf8');
 
-    // Set custom header for response
-    res.setHeader('origin', 'restjs-req-res-logging-repo');
-
     const responseLog = {
       response: {
         statusCode: res.statusCode,
-        body: JSON.parse(body) || body || {},
+        body: body || {},
         // Returns a shallow copy of the current outgoing headers
         headers: res.getHeaders(),
       },

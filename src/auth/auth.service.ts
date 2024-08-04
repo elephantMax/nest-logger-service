@@ -69,4 +69,17 @@ export class AuthService {
   async getAuthorizedUser(login: string): Promise<User> {
     return this.userService.findByLogin(login);
   }
+
+  async initAdmin() {
+    const adminLogin = this.envService.get('ADMIN_LOGIN');
+    const adminPassword = this.envService.get('ADMIN_PASSWORD');
+
+    const adminDto: CreateUserDto = {
+      login: adminLogin,
+      password: adminPassword,
+      name: 'admin',
+    };
+
+    return this.register(adminDto);
+  }
 }

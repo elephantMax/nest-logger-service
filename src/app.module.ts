@@ -16,6 +16,7 @@ import { ValidationPipe } from './shared/pipes/validation.pipe';
 import { ZodSerializerInterceptor } from 'nestjs-zod';
 import { ProjectsModule } from './projects/projects.module';
 import { LoggerMiddleware } from './logger.middleware';
+import { InitService } from './init.service';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { LoggerMiddleware } from './logger.middleware';
       useClass: ZodSerializerInterceptor,
     },
     Logger,
+    InitService,
   ],
 })
 export class AppModule implements NestModule {
